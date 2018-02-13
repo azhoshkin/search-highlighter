@@ -391,7 +391,7 @@ public class MiscellaneousTest extends AbstractExperimentalHighlighterIntegratio
         indexTestData();
 
         SearchResponse response = client().prepareSearch("test").setTypes("test")
-                .setQuery(matchQuery("_all", "very")).highlighter(new HighlightBuilder().highlighterType("experimental")
+                .setQuery(matchQuery("all", "very")).highlighter(new HighlightBuilder().highlighterType("experimental")
                 .field("*")).get();
         assertHighlight(response, 0, "test", 0, equalTo("tests <em>very</em> simple test"));
     }

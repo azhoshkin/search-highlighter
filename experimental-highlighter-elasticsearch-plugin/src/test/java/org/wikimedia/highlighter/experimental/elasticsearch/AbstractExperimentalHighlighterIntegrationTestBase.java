@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 //import org.elasticsearch.plugin.analysis.icu.AnalysisICUPlugin;
+import org.elasticsearch.analysis.common.CommonAnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.test.ESIntegTestCase;
@@ -137,11 +138,12 @@ ESIntegTestCase {
             throws IOException {
         XContentBuilder mapping = jsonBuilder().startObject();
         mapping.startObject("test").startObject("properties");
-        mapping.startObject("bar").field("type", "integer").endObject();
-        addField(mapping, "test", offsetsInPostings, fvhLikeTermVectors);
-        addField(mapping, "test2", offsetsInPostings, fvhLikeTermVectors);
+        mapping.startObject("all").field("type", "text").endObject();
+        mapping.startObject("bar").field("type", "integer").field("copy_to", "all").endObject();
+        addField(mapping, "test", offsetsInPostings, fvhLikeTermVectors, true);
+        addField(mapping, "test2", offsetsInPostings, fvhLikeTermVectors, true);
         mapping.startObject("foo").field("type").value("object").startObject("properties");
-        addField(mapping, "test", offsetsInPostings, fvhLikeTermVectors);
+        addField(mapping, "test", offsetsInPostings, fvhLikeTermVectors, true);
         mapping.endObject().endObject().endObject().endObject().endObject();
 
         XContentBuilder settings = jsonBuilder().startObject().startObject("index");
@@ -242,8 +244,11 @@ ESIntegTestCase {
     }
 
     private void addField(XContentBuilder builder, String name, boolean offsetsInPostings,
-            boolean fvhLikeTermVectors) throws IOException {
+            boolean fvhLikeTermVectors, boolean copyToAll) throws IOException {
         builder.startObject(name).field("type", "text");
+        if (copyToAll) {
+            builder.field("copy_to", "all");
+        }
         addProperties(builder, offsetsInPostings, fvhLikeTermVectors);
         builder.startObject("fields");
         addSubField(builder, "whitespace", "whitespace", offsetsInPostings, fvhLikeTermVectors);
@@ -288,8 +293,10 @@ ESIntegTestCase {
     @Override
     protected Collection<Class<? extends Plugin>> nodePlugins() {
         return Collections.unmodifiableCollection(
-                Arrays.asList(ExperimentalHighlighterPlugin.class
-                        //, AnalysisICUPlugin.class
+                Arrays.asList(
+                    CommonAnalysisPlugin.class,
+                    ExperimentalHighlighterPlugin.class
+                    //, AnalysisICUPlugin.class
                 ));
     }
 }

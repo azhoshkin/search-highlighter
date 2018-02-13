@@ -13,7 +13,7 @@ import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.common.util.BigArrays;
 import org.elasticsearch.index.mapper.FieldMapper;
-import org.elasticsearch.index.mapper.StringFieldMapper;
+import org.elasticsearch.index.mapper.TextFieldMapper;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightUtils;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlighterContext;
 import org.elasticsearch.search.fetch.subphase.highlight.SearchContextHighlight.FieldOptions;
@@ -68,7 +68,7 @@ public class FieldWrapper {
     public FieldWrapper(HighlightExecutionContext executionContext, HighlighterContext context,
             BasicQueryWeigher weigher, String fieldName) {
         assert !context.fieldName.equals(fieldName);
-        FieldMapper mapper = context.context.mapperService().documentMapper(context.hitContext.hit().type()).mappers().smartNameFieldMapper(fieldName);
+        FieldMapper mapper = context.context.mapperService().documentMapper(context.hitContext.hit().getType()).mappers().smartNameFieldMapper(fieldName);
         this.executionContext = executionContext;
         this.context = new HighlighterContext(fieldName, context.field, mapper, context.context,
                 context.hitContext, context.query);
@@ -356,8 +356,8 @@ public class FieldWrapper {
 
     public int getPositionGap() {
         if (positionGap < 0) {
-            if (context.mapper instanceof StringFieldMapper) {
-                positionGap = ((StringFieldMapper) context.mapper).getPositionIncrementGap();
+            if (context.mapper instanceof TextFieldMapper) {
+                positionGap = ((TextFieldMapper) context.mapper).getPositionIncrementGap();
             } else {
                 positionGap = 1;
             }

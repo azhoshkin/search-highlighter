@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.wikimedia.search.highlighter</groupId>
     <artifactId>experimental</artifactId>
-    <version>5.3.2.2-SNAPSHOT</version>
+    <version>6.2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>experimental-highlighter-elasticsearch-plugin</artifactId>
   <packaging>jar</packaging>
@@ -48,6 +48,12 @@
       <version>${elasticsearch.version}</version>
     </dependency>
     <dependency>
+    <groupId>org.codelibs.elasticsearch.module</groupId>
+      <artifactId>analysis-common</artifactId>
+      <version>${elasticsearch.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
         <groupId>org.elasticsearch.test</groupId>
         <artifactId>framework</artifactId>
         <version>${elasticsearch.version}</version>
@@ -63,13 +69,13 @@
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>2.6.2</version>
+        <version>2.9.1</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>2.6.2</version>
+        <version>2.9.1</version>
         <scope>test</scope>
     </dependency>
     <dependency>
